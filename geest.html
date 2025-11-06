@@ -1,60 +1,293 @@
 <!DOCTYPE html>
 <html lang="nl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Leuke Verhaaltjes - Het Magische Bos</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      background-color: #fdf6e3;
-      margin: 0;
-      padding: 20px;
-      text-align: center;
-    }
-    img {
-      max-width: 100%;
-      height: auto;
-      border-radius: 12px;
-    }
-    h1 {
-      font-size: 2em;
-      margin-top: 20px;
-      color: #333;
-    }
-    p {
-      max-width: 600px;
-      margin: 20px auto;
-      font-size: 1.1em;
-      line-height: 1.6;
-      color: #444;
-    }
-    .back-button {
-      display: inline-block;
-      margin-top: 30px;
-      padding: 10px 20px;
-      background-color: #ffcc00;
-      color: #000;
-      text-decoration: none;
-      border-radius: 8px;
-      font-weight: bold;
-    }
-    .back-button:hover {
-      background-color: #ffdd33;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Het Spookhuis - Leuke Verhaaltjes</title>
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #6a5acd;
+            --secondary-color: #ffb6c1;
+            --background-color: #f9f9f9;
+            --text-color: #333;
+            --card-color: #fff;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Comic Neue', cursive;
+        }
+        
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+        
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .back-btn {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            font-family: 'Comic Neue', cursive;
+        }
+        
+        .back-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-50%) scale(1.05);
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .progress-line {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            width: 0%;
+            z-index: 1000;
+            transition: width 0.3s ease;
+            border-radius: 0 2px 2px 0;
+        }
+        
+        .story-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            color: var(--primary-color);
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        
+        .story-cover {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            opacity: 0;
+            transform: scale(0.95);
+        }
+        
+        .story-content {
+            background-color: var(--card-color);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .story-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s ease;
+        }
+        
+        .story-text.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        footer {
+            background-color: var(--primary-color);
+            color: white;
+            text-align: center;
+            padding: 1rem;
+            margin-top: 2rem;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        
+        .fade-in {
+            animation: fadeInUp 1s ease forwards;
+        }
+        
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .story-title {
+                font-size: 2rem;
+            }
+            
+            .container {
+                padding: 1rem;
+            }
+            
+            .back-btn {
+                position: relative;
+                left: 0;
+                top: 0;
+                transform: none;
+                margin-bottom: 1rem;
+                display: inline-block;
+            }
+        }
+    </style>
 </head>
 <body>
+    <div class="progress-line"></div>
+    
+    <header>
+        <a href="index.html" class="back-btn">← Terug naar verhalen</a>
+        <h1>Leuke Verhaaltjes</h1>
+    </header>
+    
+    <div class="container">
+        <h1 class="story-title">Het Spookhuis</h1>
+        
+        <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Spookhuis" class="story-cover">
+        
+        <div class="story-content">
+            <p class="story-text">Het oude herenhuis aan de rand van het dorp stond al meer dan vijftig jaar leeg.</p>
+            
+            <p class="story-text">Iedereen in het dorp wist dat het er spookte, maar niemand durfde er nog naar binnen.</p>
+            
+            <p class="story-text">Op een stormachtige avond, terwijl de bliksem de hemel doorkliefde en de regen tegen de ramen beukte, besloot de dappere Lisa het herenhuis toch te betreden.</p>
+            
+            <p class="story-text">Ze had altijd al willen weten of de verhalen waar waren.</p>
+            
+            <p class="story-text">De zware, houten deur kraakte angstaanjagend toen Lisa hem voorzichtig opende.</p>
+            
+            <p class="story-text">Binnen hing een vochtige, muffe geur en een dikke laag stof bedekte alles.</p>
+            
+            <p class="story-text">Haar hart bonsde in haar keel terwijl ze haar zaklamp door de duisternis bewoog.</p>
+            
+            <p class="story-text">Een geluid op de trap deed haar bevriezen.</p>
+            
+            <p class="story-text">Langzaam liep ze de marmeren trap op, haar voetstappen echoden door de lege hal.</p>
+            
+            <p class="story-text">Elke trede kraakte alsof het huis haar aanwezigheid afkeurde.</p>
+            
+            <p class="story-text">Boven aangekomen zag ze een lange gang met verschillende deuren.</p>
+            
+            <p class="story-text">Aan het einde van de gang stond een figuur in het halfduister.</p>
+            
+            <p class="story-text">Het leek op een kind, maar het zweefde net boven de vloer.</p>
+            
+            <p class="story-text">Het zwevende figuur draaide zich langzaam om.</p>
+            
+            <p class="story-text">In plaats van een eng gezicht, zag Lisa een verdrietig meisje met grote, donkere ogen.</p>
+            
+            <p class="story-text">"Ik ben Emma," fluisterde het meisje. "Ik ben hier verdwaald en kan de weg naar huis niet vinden."</p>
+            
+            <p class="story-text">Lisa besefte dat het geen boze geest was, maar een verdwaalde ziel die hulp nodig had.</p>
+            
+            <p class="story-text">Samen zochten ze naar een manier om Emma terug te brengen naar waar ze thuishoorde.</p>
+            
+            <p class="story-text">Dagen werden weken, en Lisa bezocht het herenhuis regelmatig.</p>
+            
+            <p class="story-text">Emma vertelde verhalen over haar leven, hoe ze in het huis was komen wonen en er nooit meer was weggegaan.</p>
+            
+            <p class="story-text">Op een avond vonden ze een oud dagboek verborgen onder een losse vloerplank.</p>
+            
+            <p class="story-text">Het bleek van Emma's moeder te zijn, die ook in het huis had gewoond.</p>
+            
+            <p class="story-text">In het dagboek stond geschreven over een speciale plek in de tuin waar Emma graag speelde.</p>
+            
+            <p class="story-text">Samen gingen ze naar die plek, en daar gebeurde iets wonderbaarlijks.</p>
+            
+            <p class="story-text">Een zacht, warm licht omhulde Emma, en langzaam begon ze te vervagen.</p>
+            
+            <p class="story-text">"Dank je wel, Lisa," zei Emma met een glimlach. "Eindelijk kan ik naar huis."</p>
+            
+            <p class="story-text">En met die woorden was ze weg.</p>
+            
+            <p class="story-text">Het herenhuis voelde opeens minder koud en dreigend aan.</p>
+            
+            <p class="story-text">Lisa wist dat Emma eindelijk vrede had gevonden.</p>
+            
+            <p class="story-text">Soms, op stille avonden, meent Lisa nog steeds Emma's lach te horen echoën door het oude herenhuis.</p>
+        </div>
+    </div>
+    
+    <footer>
+        <p>&copy; 2023 Leuke Verhaaltjes - Alle rechten voorbehouden</p>
+    </footer>
 
-  <img src="https://source.unsplash.com/800x400/?forest,fantasy" alt="Magisch bos">
-  <h1>Het Magische Bos</h1>
-  <p>
-    Diep in het hart van het oude woud lag een verborgen plek waar bomen fluisterden en lichtjes dansten in de lucht. 
-    Niemand wist precies hoe je er kwam, behalve de kleine vos die elke nacht verhalen vertelde aan de sterren. 
-    Op een dag volgde een nieuwsgierig meisje hem, en wat ze daar ontdekte veranderde haar leven voorgoed.
-  </p>
-
-  <a href="index.html" class="back-button">← Terug</a>
-
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate title and cover on load
+            const title = document.querySelector('.story-title');
+            const cover = document.querySelector('.story-cover');
+            const footer = document.querySelector('footer');
+            const progressLine = document.querySelector('.progress-line');
+            
+            setTimeout(() => {
+                title.classList.add('fade-in');
+            }, 300);
+            
+            setTimeout(() => {
+                cover.classList.add('fade-in');
+            }, 800);
+            
+            // Scroll animation for text paragraphs
+            const storyTexts = document.querySelectorAll('.story-text');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        setTimeout(() => {
+                            entry.target.classList.add('visible');
+                        }, 100);
+                    }
+                });
+            }, {
+                threshold: 0.2,
+                rootMargin: '0px 0px -50px 0px'
+            });
+            
+            storyTexts.forEach(text => {
+                observer.observe(text);
+            });
+            
+            // Progress bar animation
+            window.addEventListener('scroll', () => {
+                const windowHeight = window.innerHeight;
+                const documentHeight = document.documentElement.scrollHeight;
+                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                const scrollPercent = (scrollTop / (documentHeight - windowHeight)) * 100;
+                
+                progressLine.style.width = scrollPercent + '%';
+                
+                // Animate footer when near bottom
+                if (scrollPercent > 90) {
+                    footer.classList.add('fade-in');
+                }
+            });
+        });
+    </script>
 </body>
 </html>
