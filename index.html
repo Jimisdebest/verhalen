@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leuke Verhaaltjes</title>
+    <style>
+        :root {
+            --primary-color: #6a5acd;
+            --secondary-color: #ffb6c1;
+            --background-color: #f9f9f9;
+            --text-color: #333;
+            --card-color: #fff;
+            --delete-color: #e74c3c;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+        
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .search-container {
+            display: flex;
+            margin-bottom: 2rem;
+            justify-content: center;
+        }
+        
+        .search-bar {
+            width: 70%;
+            padding: 0.8rem;
+            border: 2px solid var(--primary-color);
+            border-radius: 25px 0 0 25px;
+            font-size: 1rem;
+            outline: none;
+        }
+        
+        .search-button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 0 25px 25px 0;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        
+        .stories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .story-card {
+            background-color: var(--card-color);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .story-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .story-cover {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+        }
+        
+        .story-info {
+            padding: 1rem;
+        }
+        
+        .story-title {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+        }
+        
+        .story-preview {
+            font-size: 0.9rem;
+            color: #666;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+        }
+        
+        .delete-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: var(--delete-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+        }
+        
+        .story-card.user-story:hover .delete-btn {
+            display: flex;
+        }
+        
+        .create-story-btn {
+            display: block;
+            margin: 0 auto 2rem;
+            background-color: var(--secondary-color);
+            color: var(--text-color);
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        .create-story-btn:hover {
+            background-color: #ff9eb5;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .close-btn {
+            float: right;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+        
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        
+        .form-group textarea {
+            min-height: 200px;
+            resize: vertical;
+        }
+        
+        .submit-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        
+        .story-view-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .story-view-content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .story-view-header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .story-view-cover {
+            width: 100%;
+            max-height: 300px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .story-view-title {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        
+        .story-view-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            white-space: pre-line;
+        }
+        
+        footer {
+            background-color: var(--primary-color);
+            color: white;
+            text-align: center;
+            padding: 1rem;
+            margin-top: 2rem;
+        }
+        
+        @media (max-width: 768px) {
+            .stories-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+            
+            .search-bar {
+                width: 60%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Leuke Verhaaltjes</h1>
+    </header>
+    
+    <div class="container">
+        <div class="search-container">
+            <input type="text" class="search-bar" placeholder="Zoek een verhaal...">
+            <button class="search-button">Zoeken</button>
+        </div>
+        
+        <button class="create-story-btn" id="createStoryBtn">Maak verhaal</button>
+        
+        <div class="stories-grid" id="storiesGrid">
+            <!-- Verhalen worden hier dynamisch geladen -->
+        </div>
+    </div>
+    
+    <!-- Modal voor het maken van een verhaal -->
+    <div class="modal" id="storyModal">
+        <div class="modal-content">
+            <span class="close-btn" id="closeModal">&times;</span>
+            <h2>Maak een nieuw verhaal</h2>
+            <form id="storyForm">
+                <div class="form-group">
+                    <label for="storyTitle">Titel</label>
+                    <input type="text" id="storyTitle" required>
+                </div>
+                <div class="form-group">
+                    <label for="storyCover">Cover afbeelding</label>
+                    <input type="file" id="storyCover" accept="image/*" required>
+                </div>
+                <div class="form-group">
+                    <label for="storyContent">Verhaal</label>
+                    <textarea id="storyContent" required></textarea>
+                </div>
+                <button type="submit" class="submit-btn">Verhaal opslaan</button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Modal voor het bekijken van een verhaal -->
+    <div class="story-view-modal" id="storyViewModal">
+        <div class="story-view-content">
+            <span class="close-btn" id="closeStoryView">&times;</span>
+            <div class="story-view-header">
+                <img id="storyViewCover" src="" alt="" class="story-view-cover">
+                <h2 id="storyViewTitle" class="story-view-title"></h2>
+            </div>
+            <div id="storyViewText" class="story-view-text"></div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>&copy; 2023 Leuke Verhaaltjes - Alle rechten voorbehouden</p>
+    </footer>
+
+    <script>
+        // Vooraf gedefinieerde verhalen (links naar externe HTML-bestanden)
+        const predefinedStories = [
+            {
+                id: "geest",
+                title: "Het Spookhuis",
+                cover: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
+                preview: "Een spannend verhaal over een geest in een oud huis...",
+                link: "geest.html"
+            },
+            {
+                id: "draak",
+                title: "De Drakenridder",
+                cover: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
+                preview: "Een avontuurlijk verhaal over een dappere drakenridder...",
+                link: "draak.html"
+            },
+            {
+                id: "prinses",
+                title: "De Verdwenen Prinses",
+                cover: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
+                preview: "Een magisch verhaal over een prinses die verdwenen is...",
+                link: "prinses.html"
+            }
+        ];
+
+        // Functie om verhalen op te slaan in localStorage
+        function saveStoriesToLocalStorage(stories) {
+            localStorage.setItem('userStories', JSON.stringify(stories));
+        }
+
+        // Functie om verhalen uit localStorage te halen
+        function getStoriesFromLocalStorage() {
+            const stories = localStorage.getItem('userStories');
+            return stories ? JSON.parse(stories) : [];
+        }
+
+        // Functie om alle verhalen weer te geven
+        function displayStories() {
+            const storiesGrid = document.getElementById('storiesGrid');
+            storiesGrid.innerHTML = '';
+            
+            // Voeg vooraf gedefinieerde verhalen toe
+            predefinedStories.forEach(story => {
+                const storyCard = createStoryCard(story, false);
+                storiesGrid.appendChild(storyCard);
+            });
+            
+            // Voeg gebruikersverhalen toe
+            const userStories = getStoriesFromLocalStorage();
+            userStories.forEach(story => {
+                const storyCard = createStoryCard(story, true);
+                storiesGrid.appendChild(storyCard);
+            });
+        }
+
+        // Functie om een verhaalkaart te maken
+        function createStoryCard(story, isUserStory) {
+            const storyCard = document.createElement('div');
+            storyCard.className = `story-card ${isUserStory ? 'user-story' : ''}`;
+            storyCard.dataset.id = story.id;
+            
+            storyCard.innerHTML = `
+                <img src="${story.cover}" alt="${story.title}" class="story-cover">
+                <div class="story-info">
+                    <h3 class="story-title">${story.title}</h3>
+                    <p class="story-preview">${story.preview}</p>
+                </div>
+                ${isUserStory ? '<button class="delete-btn">×</button>' : ''}
+            `;
+            
+            // Event listener voor het klikken op een verhaal
+            storyCard.addEventListener('click', (e) => {
+                // Voorkom dat het verhaal wordt geopend wanneer op de delete knop wordt geklikt
+                if (!e.target.classList.contains('delete-btn')) {
+                    if (story.link) {
+                        // Vooraf gedefinieerde verhalen gaan naar een externe pagina
+                        window.location.href = story.link;
+                    } else {
+                        // Gebruikersverhalen tonen in de modal
+                        showStoryInModal(story);
+                    }
+                }
+            });
+            
+            // Event listener voor de delete knop (alleen voor gebruikersverhalen)
+            if (isUserStory) {
+                const deleteBtn = storyCard.querySelector('.delete-btn');
+                deleteBtn.addEventListener('click', (e) => {
+                    e.stopPropagation(); // Voorkom dat het verhaal wordt geopend
+                    deleteUserStory(story.id);
+                });
+            }
+            
+            return storyCard;
+        }
+
+        // Functie om een gebruikersverhaal te verwijderen
+        function deleteUserStory(storyId) {
+            if (confirm('Weet je zeker dat je dit verhaal wilt verwijderen?')) {
+                const userStories = getStoriesFromLocalStorage();
+                const updatedStories = userStories.filter(story => story.id !== storyId);
+                saveStoriesToLocalStorage(updatedStories);
+                displayStories();
+            }
+        }
+
+        // Functie om een verhaal in de modal te tonen
+        function showStoryInModal(story) {
+            const storyViewModal = document.getElementById('storyViewModal');
+            const storyViewCover = document.getElementById('storyViewCover');
+            const storyViewTitle = document.getElementById('storyViewTitle');
+            const storyViewText = document.getElementById('storyViewText');
+            
+            storyViewCover.src = story.cover;
+            storyViewCover.alt = story.title;
+            storyViewTitle.textContent = story.title;
+            storyViewText.textContent = story.content;
+            
+            storyViewModal.style.display = 'flex';
+        }
+
+        // Functie om een nieuw verhaal toe te voegen
+        function addNewStory(title, cover, content) {
+            const userStories = getStoriesFromLocalStorage();
+            const newStory = {
+                id: 'user_' + Date.now(),
+                title: title,
+                cover: cover,
+                preview: content.substring(0, 100) + '...',
+                content: content
+            };
+            
+            userStories.push(newStory);
+            saveStoriesToLocalStorage(userStories);
+            displayStories();
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            displayStories();
+            
+            // Modal functionaliteit
+            const createStoryBtn = document.getElementById('createStoryBtn');
+            const storyModal = document.getElementById('storyModal');
+            const closeModal = document.getElementById('closeModal');
+            const storyForm = document.getElementById('storyForm');
+            
+            // Story view modal
+            const storyViewModal = document.getElementById('storyViewModal');
+            const closeStoryView = document.getElementById('closeStoryView');
+            
+            createStoryBtn.addEventListener('click', () => {
+                storyModal.style.display = 'flex';
+            });
+            
+            closeModal.addEventListener('click', () => {
+                storyModal.style.display = 'none';
+            });
+            
+            closeStoryView.addEventListener('click', () => {
+                storyViewModal.style.display = 'none';
+            });
+            
+            window.addEventListener('click', (e) => {
+                if (e.target === storyModal) {
+                    storyModal.style.display = 'none';
+                }
+                if (e.target === storyViewModal) {
+                    storyViewModal.style.display = 'none';
+                }
+            });
+            
+            // Formulier verzenden
+            storyForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                const title = document.getElementById('storyTitle').value;
+                const content = document.getElementById('storyContent').value;
+                const coverFile = document.getElementById('storyCover').files[0];
+                
+                if (coverFile) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        addNewStory(title, e.target.result, content);
+                        storyModal.style.display = 'none';
+                        storyForm.reset();
+                    };
+                    reader.readAsDataURL(coverFile);
+                }
+            });
+            
+            // Zoekfunctionaliteit
+            const searchBar = document.querySelector('.search-bar');
+            const searchButton = document.querySelector('.search-button');
+            
+            function performSearch() {
+                const searchTerm = searchBar.value.toLowerCase();
+                const storyCards = document.querySelectorAll('.story-card');
+                
+                storyCards.forEach(card => {
+                    const title = card.querySelector('.story-title').textContent.toLowerCase();
+                    const preview = card.querySelector('.story-preview').textContent.toLowerCase();
+                    
+                    if (title.includes(searchTerm) || preview.includes(searchTerm)) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            }
+            
+            searchButton.addEventListener('click', performSearch);
+            searchBar.addEventListener('keyup', (e) => {
+                if (e.key === 'Enter') {
+                    performSearch();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
